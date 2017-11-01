@@ -1,0 +1,3 @@
+useDynLib(imageSoft)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")

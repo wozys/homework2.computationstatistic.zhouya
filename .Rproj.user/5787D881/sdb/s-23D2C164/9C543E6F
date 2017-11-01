@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#include <RcppArmadillo.h>\n// [[Rcpp::depends(RcppArmadillo)]]\nusing namespace Rcpp;\nusing namespace arma;\n\ninline arma::mat soft_threshD(const arma::mat &X,const double &tao){\n  arma::mat U,U1;\n  arma::vec s;\n  arma::mat V,V1;\n  arma::mat D;\n  arma::mat Dtao;\n  svd(U1,s,V1,X);\n  int nx=X.n_rows;\n  int mx=X.n_cols;\n  int n=s.n_elem;\n  U=U1.submat(0,0,nx-1,n-1);\n  V=V1.submat(0,0,mx-1,n-1);\n  for(int i=0;i<=n-1;i++){\n    if(s(i)-tao>=0)\n      s(i)=s(i)-tao;\n    else\n      s(i)=0;\n  }\n  D=diagmat(s);\n  Dtao=U*D*V.t();\n  return Dtao;\n}\n\ninline arma::mat Pomega(const arma::mat &Omega,const arma::mat &X){\n  int n=Omega.n_rows;\n  int nx=X.n_rows,mx=X.n_cols;\n  arma::mat Y=zeros<mat>(nx,mx);\n  for (int i=0;i<=n-1;i++){\n    Y(Omega(i,0)-1,Omega(i,1)-1)=X(Omega(i,0)-1,Omega(i,1)-1);\n  }\n  return Y;\n}\n\n// [[Rcpp::export]]\narma::mat homework2(arma::mat X,arma::mat Omega, double lambda){\n  arma::mat Xk,Yk,oldXk,Dinitial;\n  arma::mat U1,U,V1,V;\n  arma::vec s;\n  int n=X.n_rows;\n  int m=X.n_cols;\n  int deltak=1;\n  svd(U1,s,V1,X);\n  int l=s.n_elem;\n  U=U1.submat(0,0,n-1,l-1);\n  V=V1.submat(0,0,m-1,l-1);\n  \n  for(int i=0;i<=l-1;i++){\n    if(s(i)-2*lambda*deltak>=0)\n      s(i)=s(i)-2*lambda*deltak;\n    else\n      s(i)=0;\n  }\n  Dinitial=diagmat(s);\n  //迭代初值\n  Xk=U*Dinitial*V.t();\n\n  int k=0;\n  double tk=1,tk1=1;\n  arma::mat Zk=Xk;\n  //最大迭代次数默认为1000\n  for(int i=1;i<=1000;i++){\n    k++;\n    oldXk=Xk;\n    Yk=Zk+deltak*Pomega(Omega,X-Zk);\n    Xk=soft_threshD(Yk,2*lambda*deltak);\n    tk1=0.5*(1+sqrt(1+4*tk*tk));\n    Zk=Xk+((tk-1)/tk1)*(Xk-oldXk);\n    tk=tk1;\n    if(norm(Xk-oldXk,\"fro\")<=0.1)\n      break;\n  }\n  //把迭代后的结果处理，使得满足基本条件\n  for(int j=0;j<=m-1;j++){\n    for(int i=0;i<=n-1;i++){\n      if(Xk(i,j)<=0)\n        Xk(i,j)=0;\n      else{\n        if(Xk(i,j)>1){\n          Xk(i,j)=1;\n        }\n      }\n    }\n  }\n  //显示迭代次数\n  std::cout<<k<<std::endl;\n  return Xk;\n}\n",
+    "created" : 1509516295471.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "5|68|26|0|\n28|67|36|0|\n",
+    "hash" : "2373534279",
+    "id" : "9C543E6F",
+    "lastKnownWriteTime" : 1509515621,
+    "last_content_update" : 1509532888692,
+    "path" : "~/Desktop/r语言资料/Rcode/homework2.zhouya/src/homework2.cpp",
+    "project_path" : "src/homework2.cpp",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "cpp"
+}

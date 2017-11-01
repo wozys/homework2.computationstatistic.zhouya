@@ -1,0 +1,5 @@
+"0","library(jpeg)"
+"0","img = readJPEG(""./灰度图.jpg"")"
+"0","img = img[,,1]"
+"0","par(mar = c(0,0,0,0))"
+"0","plot(0,0,type = ""n"")"

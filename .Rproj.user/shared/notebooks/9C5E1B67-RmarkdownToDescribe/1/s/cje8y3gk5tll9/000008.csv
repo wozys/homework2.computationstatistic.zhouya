@@ -1,0 +1,6 @@
+"0","library(imageSoft)"
+"0","img2<-homework2(Xomega,c1,0.1)"
+"1","91
+"
+"0","par(mar = c(0,0,0,0))"
+"0","plot(0,0,type = ""n"")"

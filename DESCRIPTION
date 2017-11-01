@@ -1,0 +1,12 @@
+Package: imageSoft
+Type: Package
+Title: homework2 of zhouya
+Version: 1.0
+Date: 2017-10-28
+Author: Zhou Ya
+Maintainer: Zhou Ya
+     <yazhou@ruc.edu.com>
+Description: Accelerated Proximal Gradient
+License: GNU GPLv3
+Imports: Rcpp (>= 0.12.13)
+LinkingTo: Rcpp, RcppArmadillo
